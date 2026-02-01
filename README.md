@@ -3,7 +3,7 @@ Projeto direcionado à disciplina da Redes Convergentes com intuito de realizar 
 
 # Asterisk com SRTP utilizando Docker
 
-Este projeto implementa um ambiente de **telefonia IP segura** utilizando **Asterisk 18** com **SRTP (Secure RTP)**, executado em contêiner Docker.  
+Este projeto implementa um ambiente de **telefonia IP segura** utilizando **Asterisk ** com **SRTP (Secure RTP)**, executado em contêiner Docker.  
 O objetivo é demonstrar, de forma prática, a comunicação SIP segura entre softphones, integrando conceitos de **VoIP, criptografia de mídia e conteinerização**.
 
 ---
