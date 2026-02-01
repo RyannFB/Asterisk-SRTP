@@ -1,0 +1,8 @@
+services:
+  asterisk:
+    image: andrius/asterisk
+    container_name: asterisk_srtp
+    network_mode: host
+    volumes:
+      - ./asterisk:/etc/asterisk
+    restart: unless-stopped
