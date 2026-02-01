@@ -212,10 +212,9 @@ module show like srtp
 
 ---
 
-## 👤 Autor
 
 ```bash
-José Ryann
+
 ```
 
 Projeto desenvolvido para **fins acadêmicos**, integrando conceitos de:
@@ -227,7 +226,3 @@ Projeto desenvolvido para **fins acadêmicos**, integrando conceitos de:
 * Ambientes Conteinerizados
 
 ---
-
-## 📄 Licença
-
-Este projeto é destinado exclusivamente para **estudo e aprendizado**, sem fins comerciais.
