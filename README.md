@@ -31,7 +31,7 @@ Permitir o aprofundamento prático nos conceitos de VoIP e segurança da informa
 ---
 
 ## Estrutura de Diretórios
-
+``
 Asterisk-SRTP/
 ├── docker-compose.yml
 └── asterisk/
@@ -40,7 +40,6 @@ Asterisk-SRTP/
 ├── modules.conf
 └── rtp.conf
 
-yaml
 
 ---
 
@@ -51,7 +50,6 @@ O Asterisk é executado utilizando a imagem do Docker Hub:
 andrius/asterisk
 
 yaml
-Copiar código
 
 Portas utilizadas:
 - **5060/UDP** – SIP
