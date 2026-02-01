@@ -213,9 +213,7 @@ module show like srtp
 ---
 
 
-```bash
 
-```
 
 Projeto desenvolvido para **fins acadêmicos**, integrando conceitos de:
 
