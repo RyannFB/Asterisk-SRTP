@@ -1,146 +1,233 @@
-# Asterisk-SRTP
-Projeto direcionado à disciplina da Redes Convergentes com intuito de realizar a configuração do asterisk utilizando SRTP para o SIP
-
 # Asterisk com SRTP utilizando Docker
 
-Este projeto implementa um ambiente de **telefonia IP segura** utilizando **Asterisk ** com **SRTP (Secure RTP)**, executado em contêiner Docker.  
-O objetivo é demonstrar, de forma prática, a comunicação SIP segura entre softphones, integrando conceitos de **VoIP, criptografia de mídia e conteinerização**.
+## 📌 Visão Geral
+
+Este projeto implementa um **servidor VoIP Asterisk com suporte a SRTP (Secure RTP)**, utilizando **Docker e Docker Compose**, permitindo chamadas SIP com **sinalização e mídia protegidas**.
+
+O objetivo é demonstrar, de forma prática, a aplicação de conceitos de **VoIP**, **SIP**, **PJSIP**, **SRTP**, **NAT** e **conteinerização**, integrando teoria e prática em um ambiente controlado e reproduzível.
+
+O cenário foi validado com os softphones **Linphone** e **Zoiper**, realizando chamadas entre ramais internos e testes de interoperabilidade.
 
 ---
 
-## Objetivo
+## 🎯 Objetivos do Projeto
 
-Permitir o aprofundamento prático nos conceitos de VoIP e segurança da informação por meio da configuração e validação de:
-
-- SIP utilizando PJSIP
-- Criptografia de mídia com SRTP
-- Ambiente isolado e reproduzível com Docker
-- Testes de chamadas entre dois endpoints SIP
-
----
-
-## Arquitetura do Ambiente
-
-- **Servidor VoIP:** Asterisk 18
-- **Sinalização:** SIP (UDP)
-- **Mídia:** RTP / SRTP
-- **Softphones:** Linphone e Zoiper
-- **Containerização:** Docker e Docker Compose
-- **Sistema operacional:** Debian 12 / Ubuntu
+* Implementar um PBX Asterisk funcional em container
+* Configurar ramais SIP utilizando **PJSIP**
+* Garantir **criptografia de mídia com SRTP**
+* Permitir chamadas entre ramais internos (ex: 1001 ↔ 1002)
+* Documentar problemas reais e suas soluções
+* Fornecer um ambiente simples, reproduzível e acadêmico
 
 ---
 
-## Estrutura de Diretórios
-``
+## 🧱 Arquitetura da Solução
+
+* **Asterisk 18** executando em container Docker
+* Configuração via arquivos montados por volume
+* Transporte SIP utilizando **UDP**
+* Mídia protegida com **SRTP**
+* Softphones externos conectando-se ao IP da VM
+
+---
+
+## 📁 Estrutura de Diretórios
+
+```bash
 Asterisk-SRTP/
 ├── docker-compose.yml
 └── asterisk/
-├── pjsip.conf
-├── extensions.conf
-├── modules.conf
-└── rtp.conf
----
+    ├── pjsip.conf
+    ├── extensions.conf
+    ├── modules.conf
+    └── rtp.conf
+```
+
+Todos os arquivos de configuração do Asterisk são mantidos fora do container e montados via **bind mount**, facilitando edição, versionamento e troubleshooting.
 
 ---
 
-## Docker
+## ⚙️ Pré-requisitos
 
-O Asterisk é executado utilizando a imagem do Docker Hub:
-
-andrius/asterisk
-
-
-
-Portas utilizadas:
-- **5060/UDP** – SIP
-- **10000–20000/UDP** – RTP / SRTP
+```bash
+- Docker
+- Docker Compose
+- Sistema Linux (testado em Debian 12 / Ubuntu)
+- Softphone SIP (Linphone ou Zoiper)
+```
 
 ---
 
-## Endpoints SIP Configurados
+## 🚀 Subindo o Ambiente
 
-| Ramal | Usuário | Descrição |
-|-----|--------|-----------|
-| 1001 | 1001 | Softphone A |
-| 1002 | 1002 | Softphone B |
-
-Cada endpoint utiliza:
-- Autenticação por usuário e senha
-- Transporte UDP
-- Criptografia de mídia via SRTP
-
----
-
-## SRTP
-
-O SRTP é utilizado para proteger o tráfego de áudio, garantindo confidencialidade e integridade da comunicação.  
-O módulo `res_srtp.so` encontra-se carregado e em execução no Asterisk.
-
----
-
-## Como Executar
-
-### Subir o container
 ```bash
 sudo docker compose up -d
-Acessar o CLI do Asterisk
-bash
+```
 
+Verificar se o container está em execução:
+
+```bash
+sudo docker ps
+```
+
+Acessar o console do Asterisk:
+
+```bash
+sudo docker exec -it asterisk_srtp asterisk -rvvv
+```
+
+---
+
+## 📞 Configuração dos Ramais
+
+Os ramais são definidos no arquivo `pjsip.conf` utilizando:
+
+* Endpoint
+* Auth
+* AOR
+* Transporte UDP
+* SRTP habilitado
+
+Exemplo de ramais configurados:
+
+```bash
+1001
+1002
+```
+
+---
+
+## 📡 Plano de Discagem
+
+O arquivo `extensions.conf` define o plano de discagem básico, permitindo chamadas diretas entre os ramais internos.
+
+Exemplo:
+
+```bash
+1001 → 1002
+1002 → 1001
+```
+
+---
+
+## 🔐 SRTP (Secure RTP)
+
+A criptografia da mídia é garantida por:
+
+* Módulo `res_srtp.so`
+* Configuração correta no `pjsip.conf`
+* Range RTP definido no `rtp.conf`
+
+Verificação do módulo:
+
+```bash
+module show like srtp
+```
+
+---
+
+## 🧪 Testes Realizados
+
+* Registro de múltiplos ramais SIP
+* Chamadas entre dois softphones
+* Testes com Linphone e Zoiper
+* Validação de SRTP ativo
+* Análise de falhas reais de NAT e porta
+
+---
+
+## ⚠️ Problemas Encontrados e Soluções
+
+### 🔴 Conflito de Porta 5060
+
+```bash
+Causa:
+- SIP local ativo no softphone
+
+Solução:
+- Desativar SIP local / SIP Helper / SIP ALG
+- Garantir que apenas o Asterisk utilize a porta 5060
+```
+
+### 🔴 Chamadas Encerrando Imediatamente
+
+```bash
+Causa:
+- Configuração incorreta de SRTP ou NAT
+
+Solução:
+- Ajuste do rtp.conf
+- Correção do transporte SIP
+- Verificação do IP e mídia
+```
+
+### 🔴 Ramais não Registravam
+
+```bash
+Causa:
+- Transporte ou credenciais incorretas
+
+Solução:
+- Revisão de usuário, senha e AOR
+- Verificação do transport-udp
+```
+
+---
+
+## 🧰 Tecnologias Utilizadas
+
+```bash
+Asterisk        # PBX Open Source
+PJSIP           # Stack SIP moderna
+SRTP            # Criptografia de mídia
+Docker          # Conteinerização
+Docker Compose  # Orquestração
+Linphone        # Softphone SIP
+Zoiper          # Softphone SIP
+```
+
+---
+
+## 🛠️ Comandos Úteis
+
+```bash
+# Subir o ambiente
+sudo docker compose up -d
+
+# Reiniciar o container
+sudo docker compose restart
+
+# Acessar o Asterisk
 sudo docker exec -it asterisk_srtp asterisk -rvvv
 
-Verificar endpoints registrados
-asterisk
-Copiar código
+# Ver endpoints
 pjsip show endpoints
-Configuração do Linphone
-Criar uma conta SIP com os seguintes parâmetros:
 
-Usuário: 1001 ou 1002
+# Ver transportes
+pjsip show transports
 
-Senha: conforme definido em pjsip.conf
+# Ver módulos SRTP
+module show like srtp
+```
 
-Servidor: IP da VM (exemplo: 192.168.134.129)
-
-Transporte: UDP
-
-Criptografia: SRTP habilitado
-
-Importante: desativar o SIP local do Linphone para evitar conflito com a porta 5060.
-
-Testes Realizados
-Registro simultâneo de dois softphones
-
-Chamada entre os ramais 1001 e 1002
-
-Comunicação de áudio bidirecional
-
-Validação de SRTP ativo
-
-Problemas e Soluções
-Conflito de porta 5060: causado por SIP local ativo no softphone
-
-Chamadas encerrando imediatamente: ajustes de SRTP e NAT
-
-Falha no registro SIP: correção de transporte e credenciais
-
-Tecnologias Utilizadas
----
-Asterisk 
-
-PJSIP
-
-SRTP
-
-Docker
-
-Docker Compose
-
-Linphone
-
-Zoiper
 ---
 
-## Autor
+## 👤 Autor
+
+```bash
 José Ryann
-Projeto desenvolvido para fins acadêmicos, integrando teoria e prática em VoIP e Segurança da Informação.
+```
 
+Projeto desenvolvido para **fins acadêmicos**, integrando conceitos de:
+
+* Redes de Computadores
+* VoIP
+* Segurança da Informação
+* Criptografia de Mídia
+* Ambientes Conteinerizados
+
+---
+
+## 📄 Licença
+
+Este projeto é destinado exclusivamente para **estudo e aprendizado**, sem fins comerciais.
