@@ -88,8 +88,9 @@ O módulo `res_srtp.so` encontra-se carregado e em execução no Asterisk.
 sudo docker compose up -d
 Acessar o CLI do Asterisk
 bash
-Copiar código
+
 sudo docker exec -it asterisk_srtp asterisk -rvvv
+
 Verificar endpoints registrados
 asterisk
 Copiar código
