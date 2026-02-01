@@ -41,7 +41,6 @@ Asterisk-SRTP/
 └── rtp.conf
 
 yaml
-Copiar código
 
 ---
 
