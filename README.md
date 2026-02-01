@@ -39,7 +39,7 @@ Asterisk-SRTP/
 ├── extensions.conf
 ├── modules.conf
 └── rtp.conf
-
+---
 
 ---
 
@@ -49,7 +49,7 @@ O Asterisk é executado utilizando a imagem do Docker Hub:
 
 andrius/asterisk
 
-yaml
+
 
 Portas utilizadas:
 - **5060/UDP** – SIP
@@ -124,6 +124,7 @@ Chamadas encerrando imediatamente: ajustes de SRTP e NAT
 Falha no registro SIP: correção de transporte e credenciais
 
 Tecnologias Utilizadas
+---
 Asterisk 
 
 PJSIP
@@ -137,8 +138,9 @@ Docker Compose
 Linphone
 
 Zoiper
+---
 
-Autor
+## Autor
 José Ryann
 Projeto desenvolvido para fins acadêmicos, integrando teoria e prática em VoIP e Segurança da Informação.
 
